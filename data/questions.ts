@@ -3,7 +3,7 @@ import { Question } from '@/types/Question';
 export const questions: Question[] = [
   {
     id: 'q1',
-    category: 'Introduction to React Native',
+    category: 'INTRODUCTION TO REACT NATIVE',
     question: 'How does React Native render user interface elements on mobile devices?',
     options: [
       'It compiles entirely into a website inside WebView',
@@ -17,7 +17,7 @@ export const questions: Question[] = [
   },
   {
     id: 'q2',
-    category: 'Setup & Environment',
+    category: 'SETUP & ENVIRONMENT',
     question: 'Which tool allows developers to run React Native apps quickly without Android Studio or Xcode?',
     options: [
       'Metro Bundler',
@@ -30,7 +30,7 @@ export const questions: Question[] = [
   },
   {
     id: 'q3',
-    category: 'Core Components',
+    category: 'CORE COMPONENTS',
     question: 'Which React Native component displays plain text?',
     options: ['View', 'ScrollView', 'Text', 'SafeAreaView'],
     correctAnswer: 2,
@@ -38,7 +38,7 @@ export const questions: Question[] = [
   },
   {
     id: 'q4',
-    category: 'Props',
+    category: 'PROPS',
     question: 'Which statement best describes Props?',
     options: [
       'Local mutable state',
@@ -51,7 +51,7 @@ export const questions: Question[] = [
   },
   {
     id: 'q5',
-    category: 'State Management',
+    category: 'STATE MANAGEMENT',
     question: 'What happens after calling a useState setter?',
     options: [
       'Component re-renders',
