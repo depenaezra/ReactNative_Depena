@@ -47,11 +47,12 @@ export default function QuizOption({
       style={[styles.button, { borderColor, backgroundColor }]}
     >
       <View style={styles.row}>
-        <Text style={styles.emoji}>{emoji}</Text>
         <Text style={styles.label}>{option}</Text>
+        <Text style={styles.emoji}>{emoji}</Text>
       </View>
     </TouchableOpacity>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -69,11 +70,12 @@ const styles = StyleSheet.create({
   },
   emoji: {
     width: 28,
-    textAlign: 'center',
+    textAlign: 'right',
     fontSize: 16,
   },
   label: {
     flex: 1,
+
     color: '#0F172A',
     fontSize: 16,
     lineHeight: 20,

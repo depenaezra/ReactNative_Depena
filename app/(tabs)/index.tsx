@@ -22,6 +22,8 @@ export default function HomeScreen() {
   const [isExamFinished, setIsExamFinished] = useState<boolean>(false);
 
   const isLocked = selectedOption !== null;
+  const isOptionRevealMode = selectedOption !== null;
+
 
   const question: Question = useMemo(() => {
     return questions[currentQuestionIndex];
@@ -53,11 +55,8 @@ export default function HomeScreen() {
 
     if (proceedTimeoutRef.current) {
       clearTimeout(proceedTimeoutRef.current);
+      proceedTimeoutRef.current = null;
     }
-
-    proceedTimeoutRef.current = setTimeout(() => {
-      goToNextQuestion();
-    }, 450);
   };
 
   const revealWhenTimeRunsOut = () => {
@@ -177,17 +176,35 @@ export default function HomeScreen() {
       <View style={styles.screen}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.headerRow}>
-            <Text style={styles.headerText}>
-              Question {currentQuestionIndex + 1} / {totalQuestions}
-            </Text>
-            <Text style={styles.timerPill}>⏱️ {timeLeft}s</Text>
+            <View style={styles.headerTopRow}>
+              <Text style={styles.timerPill}>⏱️ {timeLeft}s</Text>
+            </View>
           </View>
 
+
           <View style={styles.card}>
+
             <Text style={styles.category}>{question.category}</Text>
-            <Text style={styles.questionText}>{question.question}</Text>
+            <Text style={styles.questionText}>
+              Question {currentQuestionIndex + 1} of {totalQuestions}
+            </Text>
+
+            <View style={styles.progressOuter}>
+              <View
+                style={[
+                  styles.progressInner,
+                  {
+                    width: `${((currentQuestionIndex + (isOptionRevealMode ? 1 : 0)) / totalQuestions) * 100}%`,
+                  },
+                ]}
+              />
+            </View>
+
+            <Text style={styles.questionPrompt}>{question.question}</Text>
+
 
             <View style={styles.optionsWrap}>
+
               {question.options.map((opt, idx) => {
                 const props: QuizOptionProps = {
                   option: opt,
@@ -207,6 +224,26 @@ export default function HomeScreen() {
                 <Text style={styles.explanationText}>{question.explanation}</Text>
               </View>
             ) : null}
+
+            <TouchableOpacity
+              style={[styles.proceedButton, selectedOption === null ? styles.proceedButtonDisabled : null]}
+              onPress={() => {
+                if (selectedOption === null) return;
+
+                if (proceedTimeoutRef.current) {
+                  clearTimeout(proceedTimeoutRef.current);
+                  proceedTimeoutRef.current = null;
+                }
+
+                setSelectedOption(null);
+                goToNextQuestion();
+              }}
+              disabled={selectedOption === null}
+            >
+              <Text style={styles.proceedButtonText}>Proceed to Next Question</Text>
+            </TouchableOpacity>
+
+
           </View>
         </ScrollView>
       </View>
@@ -219,14 +256,20 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8FAFC' },
   scrollContent: { padding: 16, gap: 14 },
 
+
   headerRow: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    gap: 10,
+    marginBottom: 2,
+  },
+  headerTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
-    marginBottom: 2,
   },
-  headerText: { color: '#0F172A', fontSize: 16, fontWeight: '800' },
   timerPill: {
     backgroundColor: '#E2E8F0',
     borderColor: '#E2E8F0',
@@ -238,6 +281,19 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
+  progressOuter: {
+    backgroundColor: '#E2E8F0',
+    borderRadius: 999,
+    height: 10,
+    overflow: 'hidden',
+  },
+  progressInner: {
+    backgroundColor: '#3B82F6',
+    height: 10,
+    borderRadius: 999,
+  },
+
+
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 18,
@@ -247,8 +303,10 @@ const styles = StyleSheet.create({
   },
   cardCenter: { alignItems: 'center' },
 
-  category: { color: '#334155', fontWeight: '700', marginBottom: 10, fontSize: 14 },
-  questionText: { color: '#0F172A', fontSize: 18, fontWeight: '800', lineHeight: 24 },
+  category: { color: '#3B82F6', fontWeight: '800', marginBottom: 8, fontSize: 12 },
+  questionText: { color: '#0F172A', fontSize: 16, fontWeight: '900', lineHeight: 22 },
+  questionPrompt: { color: '#0F172A', fontSize: 22, fontWeight: '900', lineHeight: 26, marginBottom: 8 },
+
 
   optionsWrap: { marginTop: 14 },
 
@@ -266,7 +324,21 @@ const styles = StyleSheet.create({
   },
   restartButtonText: { color: '#ffffff', fontSize: 18, fontWeight: '900', textAlign: 'center' },
 
+  proceedButton: {
+    marginTop: 14,
+    backgroundColor: '#3B82F6',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    alignSelf: 'stretch',
+  },
+  proceedButtonDisabled: {
+    backgroundColor: '#93C5FD',
+  },
+  proceedButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '900', textAlign: 'center' },
+
   resultsTitle: { fontSize: 22, fontWeight: '900', color: '#0F172A', marginBottom: 10 },
+
   resultsScore: { fontSize: 28, fontWeight: '900', color: '#0F172A', marginBottom: 6 },
   resultsPercent: { fontSize: 18, fontWeight: '800', color: '#3B82F6', marginBottom: 8 },
   resultsMessage: { color: '#334155', fontWeight: '700', textAlign: 'center', marginBottom: 6 },
